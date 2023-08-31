@@ -1,43 +1,49 @@
 const dbCon=require('../config/dbConfig')
 const bcrypt=require('bcryptjs')
-const jwt=require('jsonwebtoken')
+const jwt=require('jsonwebtoken');
+const { data } = require('autoprefixer');
 
-const securityKey="12345@Ra"
-
+//const securityKey="12345@Ra";
+console.log('check1 server');
 const userLogin=async(req,res)=>{
     const {email,password}=req.body;
-
-    const sqlQuery=`select * from user_information where email='${email}'`;
-    
-    await dbCon.query(sqlQuery,async(error,data)=>{
-        try {
-            if(data.length==0){
+    console.log('checking the post request');
+    const checkPassword=(req,data,res)=>{
+        if(data.length>0){
+            if(data[0].password===password){
+                res.json({
+                    status:200,
+                    message:'Login Success'
+                })
+            }else{
                 res.json({
                     status:400,
-                    message:"user not matched"
+                    message:'Password does not match'
                 })
-            }else{
-               
-                const sqlQuery1=`select * from roles where emp_id='${data[0].emp_id}'`
-            if(await bcrypt.compare(password,data[0].password)){
+            }
+        }
+    }
+
+    const sqlQuery=`select * from user_information where email='${email}'`;
+    const sqlQuery1=`select * from user_information where username='${email}'`;
+
+    await dbCon.query(sqlQuery,async(error,data)=>{
+        try {
+            if(data.length===0){
                 await dbCon.query(sqlQuery1,async(error,data1)=>{
-                    if(data1){
-                    const auth=jwt.sign({data:data1},securityKey);
-                    console.log('first')
-                    res.json({
-                        status:200,
-                        message:"Login success",
-                        token:auth,
-                    })
+                    if(data1.length===0){
+                      res.json({
+                        status:400,
+                        message:"user not exist"
+                      })
+                    }else{
+                        checkPassword(data1,req.body,res)
                     }
                 })
-            }else{
-                res.json({
-                        status:400,
-                        message:"Please check the password"
-                    })
-                
             }
+            if(data.length>0){
+                console.log('second',req.body)
+                checkPassword(data,req.body,res)
             }
         } catch (error) {
             res.json({
@@ -45,10 +51,10 @@ const userLogin=async(req,res)=>{
                 message:error
             })
         }
-    }) 
+    })
 }
 
-const userSignup=async(req,res)=>{
+/*const userSignup=async(req,res)=>{
 const {username,email,password}=req.body;
 const salt=await bcrypt.genSalt(10);
 const hashpwd=await bcrypt.hash(password,salt)
@@ -90,11 +96,11 @@ await dbCon.query(sqlQuery,async(error,data)=>{
     }
 })
 
-}
+}*/
 
 
 
 
 
 
-module.exports={userSignup,userLogin}
+module.exports={/*userSignup,*/userLogin}

@@ -7,7 +7,7 @@ const cors=require('cors')
 const app=express()
 const user=require('./Routes/userRouter')
 app.use(bodyparser.json())
-app.use(cors())
+app.use(cors({origin: true, credentials: true}))
 app.use('/user',user)
 
 

@@ -1,3 +1,6 @@
+const dbCon=require('../config/dbConfig')
+const bcrypt=require('bcryptjs')
+const jwt=require('jsonwebtoken');
 const checkPassword=async(data,req,res)=>{
     if(data.length>0){
     // if(data[0].password==req.password){

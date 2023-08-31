@@ -3,7 +3,7 @@ const env=require('dotenv').config()
 
 const dbConfig=mysql.createConnection({
     host:'localhost',
-    database:'userdb',
+    database:'userDb',
     user:process.env.User,
     password:process.env.PASSWORD
 })

@@ -12,7 +12,7 @@ function App() {
    <ToastContainer
    position='top-center'
    />
-<SignupPage/>
+<LoginPage/>
 
     </div>
   );
